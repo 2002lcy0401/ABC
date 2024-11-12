@@ -183,53 +183,53 @@ def cfg_check(cfgfile_path1,cfgfile_path2,threshold=0.8):
 
 
 
-mal_dir='dataset/malware_padding'
-# mal_adv_dir="D:\\malware_design\\minimal_result\\malconv\\step2_adv"
-# mal_adv_dir="D:\\malware_design\\gamma_adv\\ember"
-# mal_adv_dir="D:\\malware_design\\mab_adv\\ember\\minimal"
-mal_adv_dir="D:\malware_design\cfg_compare\mab\malgct"
-mal_list=os.listdir(mal_adv_dir)
+# mal_dir='dataset/malware_padding'
+# # mal_adv_dir="D:\\malware_design\\minimal_result\\malconv\\step2_adv"
+# # mal_adv_dir="D:\\malware_design\\gamma_adv\\ember"
+# # mal_adv_dir="D:\\malware_design\\mab_adv\\ember\\minimal"
+# mal_adv_dir="D:\malware_design\cfg_compare\mab\malgct"
+# mal_list=os.listdir(mal_adv_dir)
 
-ori_cfg_dir='cfg/malgct/ori'
-adv_cfg_dir='cfg/malgct/adv'
+# ori_cfg_dir='cfg/malgct/ori'
+# adv_cfg_dir='cfg/malgct/adv'
 
-success=0
-all=len(mal_list)
-i=1
-for mal in mal_list:
-    print(f'process {i}')
-    i+=1
-    maladv_path=os.path.join(mal_adv_dir,mal)
-    maladv_path=os.path.normpath(maladv_path)
-    mal_path=mal.split('_adv')[0]+'.exe'
-    mal2=mal_path
-    mal_path=os.path.join(mal_dir,mal_path)
-    mal_path=os.path.normpath(mal_path)
-
-
-
-    dot_path=get_file_cfg(mal_path)
-    mal_dot_path=os.path.join(ori_cfg_dir,mal.split('.')[0]+'.dot')
-    if os.path.exists(dot_path):
-        shutil.copy(dot_path,mal_dot_path)
-        os.remove(dot_path)
-        os.remove(os.path.join(mal_dir,mal2+'.idb'))
+# success=0
+# all=len(mal_list)
+# i=1
+# for mal in mal_list:
+#     print(f'process {i}')
+#     i+=1
+#     maladv_path=os.path.join(mal_adv_dir,mal)
+#     maladv_path=os.path.normpath(maladv_path)
+#     mal_path=mal.split('_adv')[0]+'.exe'
+#     mal2=mal_path
+#     mal_path=os.path.join(mal_dir,mal_path)
+#     mal_path=os.path.normpath(mal_path)
 
 
-        dot_path=get_file_cfg(maladv_path)
-        adv_dot_path=os.path.join(adv_cfg_dir,mal.split('.')[0]+'.dot')
-        shutil.copy(dot_path,adv_dot_path)
-        os.remove(dot_path)
-        os.remove(os.path.join(mal_adv_dir,mal+'.idb'))
-        fun_flag=cfg_check(mal_dot_path,adv_dot_path,threshold=0.8)
-        if fun_flag:
-            success+=1
-            print('funtionality_verification结果为:',fun_flag)
-    else:
-        print("不能提取CFG,直接略过")
-        all=all-1
-        continue
 
-print('success:',success,'all',all,'success rate:',success/all)
+#     dot_path=get_file_cfg(mal_path)
+#     mal_dot_path=os.path.join(ori_cfg_dir,mal.split('.')[0]+'.dot')
+#     if os.path.exists(dot_path):
+#         shutil.copy(dot_path,mal_dot_path)
+#         os.remove(dot_path)
+#         os.remove(os.path.join(mal_dir,mal2+'.idb'))
+
+
+#         dot_path=get_file_cfg(maladv_path)
+#         adv_dot_path=os.path.join(adv_cfg_dir,mal.split('.')[0]+'.dot')
+#         shutil.copy(dot_path,adv_dot_path)
+#         os.remove(dot_path)
+#         os.remove(os.path.join(mal_adv_dir,mal+'.idb'))
+#         fun_flag=cfg_check(mal_dot_path,adv_dot_path,threshold=0.8)
+#         if fun_flag:
+#             success+=1
+#             print('funtionality_verification结果为:',fun_flag)
+#     else:
+#         print("不能提取CFG,直接略过")
+#         all=all-1
+#         continue
+
+# print('success:',success,'all',all,'success rate:',success/all)
 
 

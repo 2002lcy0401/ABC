@@ -29,10 +29,6 @@ before_times=[]
 after_times=[]
 
 
-with open(weight_file, 'r') as f:
-    json_result = json.load(f)
-last_weight_result = json_result[-1]
-
 # 访问所需的权重值
 step1_weights = [1,1,1,1]
 
