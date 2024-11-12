@@ -1,4 +1,4 @@
-# MiniMal: Hard-Label Adversarial Attack Against Static Malware Detection With Minimal Perturbation
+# MiniMal
 
 
 
