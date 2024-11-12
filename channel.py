@@ -10,8 +10,10 @@ import json
 import functionality_verification
 # MALCONV_MODEL_PATH = 'detector/malware_evasion_competition/models/malconv/malconv.checkpoint'
 # attack_model = models.MalConvModel(MALCONV_MODEL_PATH, thresh=0.5)
+
 EMBER_MODEL_PATH = 'detector/malware_evasion_competition/models/ember/ember_model.txt'
 attack_model = models.EmberModel(EMBER_MODEL_PATH, thresh=0.8336)
+
 max_query=[100,200,300,400,500]
 step1_maxquery=50
 weight_file='json_result/ember/weight.json'
@@ -32,14 +34,12 @@ with open(weight_file, 'r') as f:
 last_weight_result = json_result[-1]
 
 # 访问所需的权重值
-# count = last_weight_result['count']
-step1_weights = last_weight_result['operation_weight']
-ben_weights = last_weight_result['benign_content_weight']
+step1_weights = [1,1,1,1]
 
-# content_weights = [1 for i in range(len(ben_dir_list))]
-# ben_weights={}
-# for ben_name,weight in zip(ben_dir_list,content_weights):
-#     ben_weights[ben_name]=weight
+content_weights = [1 for i in range(len(ben_dir_list))]
+ben_weights={}
+for ben_name,weight in zip(ben_dir_list,content_weights):
+    ben_weights[ben_name]=weight
 
 mal_dir='dataset/malware'
 ori_cfg_dir='cfg/ember/ori'
@@ -47,16 +47,9 @@ adv_cfg_dir='cfg/ember/adv'
 
 mal_list=os.listdir(mal_dir)
 all=0
-success=368
+success=0
 all_query=0
 preb_rates=[[] for i in range(len(max_query))] #与查询次数对应
-
-preb_rates[0]=[0.4936641048840343 for i in range(368)]
-preb_rates[1]=[0.4661559172173643 for i in range(368)]
-preb_rates[2]=[0.4521567163365901 for i in range(368)]
-preb_rates[3]=[0.4481726868027994 for i in range(368)]
-preb_rates[4]=[0.4453032945376927 for i in range(368)]
-
 
 results_file=['json_result/ember/'+str(i)+'.json' for i in max_query]
 
@@ -70,15 +63,8 @@ for mal in mal_list:
     ben_flag=[[],[],[],[]]
     mal_path=os.path.join(mal_dir,mal)
     mal_path=os.path.normpath(mal_path)
-    
     all+=1
-    if all<=374:
-        continue
-
-
     print(f'process {all}:{mal}')
-
-
     mal_adv=mal.split('.')[0]+'_adv.exe'
 
     adv_path=os.path.join(mal_dir,mal_adv)
@@ -107,22 +93,22 @@ for mal in mal_list:
         print('step1成功')
         before_times.append(sum(times))
         
-        # dot_path=functionality_verification.get_file_cfg(mal_path)
-        # mal_dot_path=os.path.join(ori_cfg_dir,mal.split('.')[0]+'.dot')
-        # shutil.copy(dot_path,mal_dot_path)
-        # os.remove(dot_path)
-        # os.remove(os.path.join(mal_dir,mal+'.idb'))
+        dot_path=functionality_verification.get_file_cfg(mal_path)
+        mal_dot_path=os.path.join(ori_cfg_dir,mal.split('.')[0]+'.dot')
+        shutil.copy(dot_path,mal_dot_path)
+        os.remove(dot_path)
+        os.remove(os.path.join(mal_dir,mal+'.idb'))
+
+        dot_path=functionality_verification.get_file_cfg(adv_copy_path)
+        adv_dot_path=os.path.join(adv_cfg_dir,mal.split('.')[0]+'.dot')
+        shutil.copy(dot_path,adv_dot_path)
+        os.remove(dot_path)
+        os.remove(os.path.join(adv_dir,mal_adv+'.idb'))
+
+        fun_flag=functionality_verification.cfg_check(mal_dot_path,adv_dot_path,threshold=0.8)
+        print("step1结束,funtionality_verification结果为:",fun_flag)
 
 
-        # dot_path=functionality_verification.get_file_cfg(adv_copy_path)
-        # adv_dot_path=os.path.join(adv_cfg_dir,mal.split('.')[0]+'.dot')
-        # shutil.copy(dot_path,adv_dot_path)
-        # os.remove(dot_path)
-        # os.remove(os.path.join(adv_dir,mal_adv+'.idb'))
-
-        
-        # fun_flag=functionality_verification.cfg_check(mal_dot_path,adv_dot_path,threshold=0.8)
-        # print("step1结束,funtionality_verification结果为:",fun_flag)
         fun_flag=True
     else:
         print('step1失败')
